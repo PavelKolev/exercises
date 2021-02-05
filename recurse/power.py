@@ -1,4 +1,8 @@
 
+# https://www.geeksforgeeks.org/modular-exponentiation-power-in-modular-arithmetic/
+#
+# Assumming p is a prime number, so as to apply a^(p-1) == 1 mod p
+#
 
 
 def power(x, n):
@@ -29,9 +33,13 @@ def m_power(x, n, p):
 		return (x * m_power(x, n-1, p)) % p
 
 
-for i in range(10+1):
-	print(power(2, i))
+def test():
+	for i in range(10+1):
+		print(power(2, i))
 
-print()
-for i in range(20+1):
-	print(mod_power(2, i, 11))
+	print()
+	for i in range(20+1):
+		print(mod_power(2, i, 11))
+
+
+test()
