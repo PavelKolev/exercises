@@ -23,9 +23,11 @@ def choose(n, k, i, l, S_i, L):
 		S_i.remove(e)
 
 
-def solve(n):
+def solve(A, n):
+	# Initialize the Dictionary (DP Table)
 	D = {}
 
+	# Initialize Base case, i.e. edges
 	S_I = []
 	choose(n, 1, 0, 2, set(), S_I)
 
@@ -33,7 +35,8 @@ def solve(n):
 		D[str(i)] = {}
 		for j in range(2, n+1):
 			D[str(i)][j] = A[1][j] if i == j else float('inf')
-		
+
+	# Main Part
 	for v in range(2, n+1):
 		S_I = []
 		choose(n, v, 0, 2, set(), S_I)
@@ -56,11 +59,29 @@ def solve(n):
 					D[S_w][j] = min( sols )
 
 					#print('[', S_w, j, ']=', sols, D[S_w][j])
+	return D
 
-	S   = set(range(2, n+1))
-	S_w = ''.join([str(e) for e in sorted(S)])
 
-	return min( [D[S_w][j] + A[j][1] for j in range(2, n+1)] )
+def solution(A, D, n):
+	# Compute Optimal Value
+	S    = set(range(2, n+1))
+	S_w  = ''.join([str(e) for e in sorted(S)])
+	OPT  = min( [D[S_w][j] + A[j][1] for j in range(2, n+1)] )
+	
+	# Compute Optimal Solution (the TSP tour)
+	V    = [1]
+	last = 1
+	while S:
+		S_w = ''.join([str(e) for e in sorted(S)])
+		opt = min( [D[S_w][j] + A[j][last] for j in S] )
+		L   = [j for j in S if opt == D[S_w][j] + A[j][last]]
+		
+		V.insert(0, L[0])
+		S.remove(L[0])
+		last = L[0]
+	
+	V.insert(0, 1)
+	return V, OPT
 
 
 def test_choose():
@@ -81,16 +102,53 @@ def test_choose():
 def run():
 	n = len(A)
 
+	# Extend A by 1 dimension (row-column-wise)
 	A.insert(0, [0 for i in range(n+1)])
 	for i in range(n+1):
 		A[i].insert(0, 0)
 
-	#for i in range(n+1):
-	#	print(A[i])
+	# Show Adj matrix A
+	for i in range(n+1):
+		print(A[i])
+	print()
 
-	r = solve(n)
-	print(r)
+	# Solve TSP problem and show an optimal solution
+	D 	   = solve(A, n)
+	V, opt = solution(A, D, n)
+
+	print(V, opt)
 
 
 #test_choose()
 run()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
